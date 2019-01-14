@@ -60,7 +60,7 @@ app.get('/home', (req, res) => res.send('Nothing to see here 👀\n'))
 app.get('/health', (req, res) => res.send('APP IS WORKING!\n'))
 
 app.get('/', async (req, res) => {
-    let tubeDataResponse = await getLineStatus('tube')
+    let tubeDataResponse = await getLineStatus('tube,dlr,overground')
     console.log(req.headers["user-agent"])
     console.log('GET TUBE DATA, STATUS: ', tubeDataResponse.status)
 
