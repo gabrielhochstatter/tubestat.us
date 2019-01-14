@@ -20,6 +20,7 @@
   "homepage": "https://github.com/gabrielhochstatter/tubestat.us#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "cli-table": "^0.3.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4"
   },

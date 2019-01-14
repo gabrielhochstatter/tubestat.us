@@ -1,5 +1,8 @@
 const express = require('express')
 const axios = require('axios')
+
+const Table = require('cli-table')
+
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 3000
@@ -14,7 +17,9 @@ const getTubeStatus = async () => {
 }
 
 const buildStatusMessage = (statusData) => {
-    let listOfLineNames = statusData.map(line => {
+    const table = new Table({ head: ['Line', 'Status']})
+
+    statusData.forEach(line => {
         const statusDescriptionMessage = line.lineStatuses[0].statusSeverityDescription
         const statusSeverity = line.lineStatuses[0].statusSeverity
         const resetColor = '\x1b[0m'
@@ -30,10 +35,14 @@ const buildStatusMessage = (statusData) => {
             color = '\x1b[32m'
         }
 
-        return `${blue}${line.name}: ${color}${statusDescriptionMessage}${resetColor}`
+        let lineName = `${blue}${line.name}:`
+        let statusMessage = `${color}${statusDescriptionMessage}${resetColor}`
+
+        const tableRow = {[lineName]: statusMessage}
+        table.push(tableRow)
     })
 
-    return listOfLineNames.join(`\n`)
+    return table.toString()
 }
 
 const buildGhettoHTMLVersion = (statusData) => {
