@@ -12,5 +12,5 @@ Right now you just `curl tubestat.us` and you should get a list of lines and the
 
 The output should look something like this: ![output](https://i.imgur.com/3Jjt2z5.png)
 
-Eventually I might add more stuff like a more verbose output of actual disruptions, and a front-end that's actually human-readable from a browser (don't try it now unless you love gibberish 🙈)
+Eventually I might add more stuff like a more verbose output of actual disruptions, and a front-end that looks nice if you go to it via a browser.
 
