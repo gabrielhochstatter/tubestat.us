@@ -57,7 +57,6 @@ const buildGhettoHTMLVersion = (statusData) => {
 
 //ROUTES:
 app.get('/home', (req, res) => res.send('Nothing to see here 👀\n'))
-
 app.get('/health', (req, res) => res.send('APP IS WORKING!\n'))
 
 app.get('/', async (req, res) => {
@@ -67,21 +66,6 @@ app.get('/', async (req, res) => {
 
     const statusMessage = buildStatusMessage(tubeDataResponse.data)
     const htmlResponse = buildGhettoHTMLVersion(tubeDataResponse.data)
-
-    if (req.headers["user-agent"].includes('curl')) {
-        res.send(statusMessage + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
-    } else {
-        res.send(htmlResponse)
-    }
-})
-
-app.get('/bus', async (req, res) => {
-    let busDataResponse = await getLineStatus('bus')
-    console.log(req.headers["user-agent"])
-    console.log('GET TUBE DATA, STATUS: ', busDataResponse.status)
-
-    const statusMessage = buildStatusMessage(busDataResponse.data)
-    const htmlResponse = buildGhettoHTMLVersion(busDataResponse.data)
 
     if (req.headers["user-agent"].includes('curl')) {
         res.send(statusMessage + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
