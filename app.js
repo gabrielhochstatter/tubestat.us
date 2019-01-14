@@ -18,6 +18,7 @@ const buildStatusMessage = (statusData) => {
         const statusDescriptionMessage = line.lineStatuses[0].statusSeverityDescription
         const statusSeverity = line.lineStatuses[0].statusSeverity
         const resetColor = '\x1b[0m'
+        const blue = '\x1b[34m'
 
         let color = '\x1b[0m'
 
@@ -29,10 +30,19 @@ const buildStatusMessage = (statusData) => {
             color = '\x1b[32m'
         }
 
-        return `\x1b[34m${line.name}: ${color}${statusDescriptionMessage}${resetColor}`
+        return `${blue}${line.name}: ${color}${statusDescriptionMessage}${resetColor}`
     })
 
     return listOfLineNames.join(`\n`)
+}
+
+const buildGhettoHTMLVersion = (statusData) => {
+    let list = statusData.map(line => {
+        const statusDescriptionMessage = line.lineStatuses[0].statusSeverityDescription
+        return `<li>${line.name}: ${statusDescriptionMessage}</li>`
+    })
+
+    return `<h1>TUBE STATUS:</h1><ul>${list.join('')}</ul><p>NOTE: This is much better if you use "curl tubestat.us" from a terminal</p>`
 }
 
 app.get('/home', (req, res) => res.send('Nothing to see here 👀\n'))
@@ -41,17 +51,25 @@ app.get('/health', (req, res) => res.send('APP IS WORKING!\n'))
 
 app.get('/', async (req, res) => {
     let tubeDataResponse = await getTubeStatus()
+    console.log(req.headers["user-agent"])
     console.log('GET TUBE DATA, STATUS: ', tubeDataResponse.status)
 
     const statusMessage = buildStatusMessage(tubeDataResponse.data)
+    const htmlResponse = buildGhettoHTMLVersion(tubeDataResponse.data)
 
-    // const listOfLineNames = tubeDataResponse.data.map(line => {
-    //     let statusDescriptionMessage = '-'
+    if (req.headers["user-agent"].includes('curl')) {
+        res.send(statusMessage + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
+    } else {
+        res.send(htmlResponse)
+    }
+})
 
-    //     return `\x1b[34m${line.name}:\x1b[0m ${line.lineStatuses[0].statusSeverityDescription}`
-    // })
+app.get('/html', async (req, res) => {
+    let tubeDataResponse = await getTubeStatus()
+    console.log('GET TUBE DATA, STATUS: ', tubeDataResponse.status)
 
-    res.send(statusMessage + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
+    const statusMessage = buildGhettoHTMLVersion(tubeDataResponse.data)
+    res.send(statusMessage)
 })
 
 app.listen(port, () => console.log(`tubestat.us is up on port ${port}!`))
