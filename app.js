@@ -35,7 +35,7 @@ const buildStatusMessage = (statusData) => {
             color = '\x1b[32m'
         }
 
-        let lineName = `${blue}${line.name}:`
+        let lineName = `${blue}${line.name}:${resetColor}`
         let statusMessage = `${color}${statusDescriptionMessage}${resetColor}`
 
         const tableRow = {[lineName]: statusMessage}
