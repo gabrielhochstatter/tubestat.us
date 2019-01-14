@@ -16,6 +16,15 @@ const getTubeStatus = async () => {
     }
 }
 
+const getBusStatus = async () => {
+    try {
+        return await axios.get('https://api.tfl.gov.uk/line/mode/bus/status')
+    } catch (error) {
+        console.log(error)
+        return 'SOMETHING BROKE 🤯 SORRY!'
+    }
+}
+
 const buildStatusMessage = (statusData) => {
     const table = new Table({ head: ['Line', 'Status']})
 
@@ -65,6 +74,21 @@ app.get('/', async (req, res) => {
 
     const statusMessage = buildStatusMessage(tubeDataResponse.data)
     const htmlResponse = buildGhettoHTMLVersion(tubeDataResponse.data)
+
+    if (req.headers["user-agent"].includes('curl')) {
+        res.send(statusMessage + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
+    } else {
+        res.send(htmlResponse)
+    }
+})
+
+app.get('/bus', async (req, res) => {
+    let busDataResponse = await getBusStatus()
+    console.log(req.headers["user-agent"])
+    console.log('GET TUBE DATA, STATUS: ', busDataResponse.status)
+
+    const statusMessage = buildStatusMessage(busDataResponse.data)
+    const htmlResponse = buildGhettoHTMLVersion(busDataResponse.data)
 
     if (req.headers["user-agent"].includes('curl')) {
         res.send(statusMessage + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
