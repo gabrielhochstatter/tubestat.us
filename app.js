@@ -25,7 +25,7 @@ app.get('/', async (req, res) => {
         return `${line.name}: ${line.lineStatuses[0].statusSeverityDescription}`
     })
 
-    res.send(listOfLineNames.join('\n') + `\n`)
+    res.send(listOfLineNames.join('\n') + `\n` + 'Created by: Gabriel Hochstatter')
 })
 
 app.listen(port, () => console.log(`tubestat.us is up on port ${port}!`))
