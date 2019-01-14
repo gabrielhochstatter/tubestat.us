@@ -1,6 +1,6 @@
 # tubestat.us
 
-curl your commmute!
+Just type `curl tubestat.us` into a terminal window and see!
 
 ### What is this?
 
