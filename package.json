@@ -1,0 +1,29 @@
+{
+  "name": "tubestat.us",
+  "version": "1.0.0",
+  "description": "Get the tube status via curl!",
+  "main": "app.js",
+  "scripts": {
+    "test": "test",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielhochstatter/tubestat.us.git"
+  },
+  "author": "Gabriel Hochstatter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gabrielhochstatter/tubestat.us/issues"
+  },
+  "homepage": "https://github.com/gabrielhochstatter/tubestat.us#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
