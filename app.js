@@ -22,7 +22,7 @@ app.get('/', async (req, res) => {
     console.log('GET TUBE DATA, STATUS: ', tubeDataResponse.status)
 
     const listOfLineNames = tubeDataResponse.data.map(line => {
-        return `${line.name}: ${line.lineStatuses[0].statusSeverityDescription}`
+        return `\x1b[32m${line.name}:\x1b[0m ${line.lineStatuses[0].statusSeverityDescription}`
     })
 
     res.send(listOfLineNames.join('\n') + `\nCreated by: Gabriel Hochstatter\n`)
