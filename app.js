@@ -17,7 +17,19 @@ const getLineStatus = async (lineType) => {
 }
 
 // BUILDERS:
-const buildStatusMessage = (statusData) => {
+const buildHeader = (format) => {
+    const time = new Date().toLocaleTimeString()
+    const date = new Date().toDateString()
+    const header = `\x1b[1mTUBESTAT.US @ ${time} on ${date} \x1b[0m \n`
+
+    if (format === 'browser') {
+        return `TUBESTAT.US @ ${time} on ${date}`
+    }
+
+    return header
+}
+
+const buildStatusTable = (statusData) => {
     const table = new Table({ head: ['Line', 'Status']})
 
     statusData.forEach(line => {
@@ -52,7 +64,11 @@ const buildGhettoHTMLVersion = (statusData) => {
         return `<li>${line.name}: ${statusDescriptionMessage}</li>`
     })
 
-    return `<h1>TUBE STATUS:</h1><ul>${list.join('')}</ul><p>NOTE: This is much better if you use "curl tubestat.us" from a terminal</p>`
+    return `
+    <style>* {font-family: sans-serif;}</style>
+    <h1>${buildHeader('browser')}</h1>
+    <ul>${list.join('')}</ul>
+    <p>NOTE: This is much better if you use "curl tubestat.us" from a terminal</p>`
 }
 
 //ROUTES:
@@ -60,15 +76,16 @@ app.get('/home', (req, res) => res.send('Nothing to see here 👀\n'))
 app.get('/health', (req, res) => res.send('APP IS WORKING!\n'))
 
 app.get('/', async (req, res) => {
+
     let tubeDataResponse = await getLineStatus('tube,dlr,overground')
     console.log(req.headers["user-agent"])
     console.log('GET TUBE DATA, STATUS: ', tubeDataResponse.status)
 
-    const statusMessage = buildStatusMessage(tubeDataResponse.data)
+    const statusTable = buildStatusTable(tubeDataResponse.data)
     const htmlResponse = buildGhettoHTMLVersion(tubeDataResponse.data)
 
     if (req.headers["user-agent"].includes('curl')) {
-        res.send(statusMessage + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
+        res.send(buildHeader() + statusTable + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
     } else {
         res.send(htmlResponse)
     }
