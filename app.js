@@ -130,7 +130,8 @@ app.get('/', async (req, res) => {
     
 
     let tubeDataResponse = await getLineStatus('tube,dlr,overground')
-    console.log(req.headers["user-agent"])
+    console.log('user agent', req.headers["user-agent"])
+    console.log('cache control:', req.headers["cache-control"])
     console.log('GET TUBE DATA, STATUS: ', tubeDataResponse.status)
 
     const statusTable = buildStatusTable(tubeDataResponse.data)
