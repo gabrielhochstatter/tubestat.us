@@ -1,6 +1,7 @@
 const express = require('express')
 const axios = require('axios')
 const Table = require('cli-table')
+const figlet = require('figlet')
 
 require('dotenv').config()
 const app = express()
@@ -16,27 +17,77 @@ const getLineStatus = async (lineType) => {
     }
 }
 
+// COLORING:
+const resetColor = '\x1b[0m'
+const vicBlue = '\x1b[38;5;45m'
+const mint = '\x1b[38;5;49m'
+const lightBlue = '\x1b[38;5;27m'
+const red = '\x1b[38;5;9m'
+const brown = '\x1b[38;5;94m'
+const yellow = '\x1b[38;5;11m'
+const green = '\x1b[38;5;2m'
+const dlrTeal = '\x1b[38;5;6m'
+const pink = '\x1b[38;5;218m'
+const grey = '\x1b[38;5;250m'
+const orange = '\x1b[38;5;202m'
+const burgundy = '\x1b[38;5;124m'
+const northern = '\x1b[38;5;243m'
+
+const colorLineName = (lineName) => {
+    switch (lineName) {
+        case 'Bakerloo':
+            return `${brown}${lineName}${resetColor}`
+        case 'Central':
+            return `${red}${lineName}${resetColor}`
+        case 'Circle':
+            return `${yellow}${lineName}${resetColor}`
+        case 'District':
+            return `${green}${lineName}${resetColor}`
+        case 'DLR':
+            return `${dlrTeal}${lineName}${resetColor}`
+        case 'Hammersmith & City':
+            return `${pink}${lineName}${resetColor}`
+        case 'Jubilee':
+            return `${grey}${lineName}${resetColor}`
+        case 'London Overground':
+            return `${orange}${lineName}${resetColor}`
+        case 'Metropolitan':
+            return `${burgundy}${lineName}${resetColor}`
+        case 'Northern':
+            return `${northern}${lineName}${resetColor}`
+        case 'Piccadilly':
+            return `${lightBlue}${lineName}${resetColor}`
+        case 'Victoria':
+            return `${vicBlue}${lineName}${resetColor}`
+        case 'Waterloo & City':
+            return `${mint}${lineName}${resetColor}`
+        default:
+            return `${resetColor}${lineName}`
+    }
+
+}
+
 // BUILDERS:
 const buildHeader = (format) => {
     const time = new Date().toLocaleTimeString()
     const date = new Date().toDateString()
-    const header = `\x1b[1mTUBESTAT.US @ ${time} on ${date} \x1b[0m \n`
+    const header = `\x1b[1mLine status @ ${time} on ${date} \x1b[0m \n`
+
+    const bigHeader = figlet.textSync('TUBESTAT.US', {font: 'Larry 3D 2'})
 
     if (format === 'browser') {
         return `TUBESTAT.US @ ${time} on ${date}`
     }
 
-    return header
+    return `\x1b[1m${bigHeader}\n${header}`
 }
 
 const buildStatusTable = (statusData) => {
-    const table = new Table({ head: ['Line', 'Status']})
+    const table = new Table({ head: [`\x1b[0mLine`, `\x1b[0mStatus`]})
 
     statusData.forEach(line => {
         const statusDescriptionMessage = line.lineStatuses[0].statusSeverityDescription
         const statusSeverity = line.lineStatuses[0].statusSeverity
-        const resetColor = '\x1b[0m'
-        const blue = '\x1b[34m'
 
         let color = '\x1b[0m'
 
@@ -48,10 +99,10 @@ const buildStatusTable = (statusData) => {
             color = '\x1b[32m'
         }
 
-        let lineName = `${blue}${line.name}:${resetColor}`
+        // let lineName = `${blue}${line.name}:${resetColor}`
         let statusMessage = `${color}${statusDescriptionMessage}${resetColor}`
 
-        const tableRow = {[lineName]: statusMessage}
+        const tableRow = {[colorLineName(line.name)]: [statusMessage]}
         table.push(tableRow)
     })
 
