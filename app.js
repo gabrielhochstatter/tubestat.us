@@ -127,6 +127,9 @@ app.get('/home', (req, res) => res.send('Nothing to see here 👀\n'))
 app.get('/health', (req, res) => res.send('APP IS WORKING!\n'))
 
 app.get('/', async (req, res) => {
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Expires', '-1');
+    res.header('Pragma', 'no-cache');
 
     let tubeDataResponse = await getLineStatus('tube,dlr,overground')
     console.log(req.headers["user-agent"])
