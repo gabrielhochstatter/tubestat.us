@@ -2,10 +2,17 @@ const express = require('express')
 const axios = require('axios')
 const Table = require('cli-table')
 const figlet = require('figlet')
+const expressReact = require('express-react-views')
+
+const colorLineName = require('./helpers/colorLineName')
 
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 3000
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jsx');
+app.engine('jsx', expressReact.createEngine());
 
 // API CALL STUFF:
 const getLineStatus = async (lineType) => {
@@ -19,53 +26,6 @@ const getLineStatus = async (lineType) => {
 
 // COLORING:
 const resetColor = '\x1b[0m'
-const vicBlue = '\x1b[38;5;45m'
-const mint = '\x1b[38;5;49m'
-const lightBlue = '\x1b[38;5;27m'
-const red = '\x1b[38;5;9m'
-const brown = '\x1b[38;5;94m'
-const yellow = '\x1b[38;5;11m'
-const green = '\x1b[38;5;2m'
-const dlrTeal = '\x1b[38;5;6m'
-const pink = '\x1b[38;5;218m'
-const grey = '\x1b[38;5;250m'
-const orange = '\x1b[38;5;202m'
-const burgundy = '\x1b[38;5;124m'
-const northern = '\x1b[38;5;243m'
-
-const colorLineName = (lineName) => {
-    switch (lineName) {
-        case 'Bakerloo':
-            return `${brown}${lineName}${resetColor}`
-        case 'Central':
-            return `${red}${lineName}${resetColor}`
-        case 'Circle':
-            return `${yellow}${lineName}${resetColor}`
-        case 'District':
-            return `${green}${lineName}${resetColor}`
-        case 'DLR':
-            return `${dlrTeal}${lineName}${resetColor}`
-        case 'Hammersmith & City':
-            return `${pink}${lineName}${resetColor}`
-        case 'Jubilee':
-            return `${grey}${lineName}${resetColor}`
-        case 'London Overground':
-            return `${orange}${lineName}${resetColor}`
-        case 'Metropolitan':
-            return `${burgundy}${lineName}${resetColor}`
-        case 'Northern':
-            return `${northern}${lineName}${resetColor}`
-        case 'Piccadilly':
-            return `${lightBlue}${lineName}${resetColor}`
-        case 'Victoria':
-            return `${vicBlue}${lineName}${resetColor}`
-        case 'Waterloo & City':
-            return `${mint}${lineName}${resetColor}`
-        default:
-            return `${resetColor}${lineName}`
-    }
-
-}
 
 // BUILDERS:
 const buildHeader = (format) => {
@@ -73,7 +33,7 @@ const buildHeader = (format) => {
     const date = new Date().toDateString()
     const header = `\x1b[1mLine status @ ${time} on ${date} \x1b[0m \n`
 
-    const bigHeader = figlet.textSync('TUBESTAT.US', {font: 'Larry 3D 2'})
+    const bigHeader = figlet.textSync('TUBESTAT.US', {font: 'DOS Rebel'})
 
     if (format === 'browser') {
         return `TUBESTAT.US @ ${time} on ${date}`
@@ -99,7 +59,6 @@ const buildStatusTable = (statusData) => {
             color = '\x1b[32m'
         }
 
-        // let lineName = `${blue}${line.name}:${resetColor}`
         let statusMessage = `${color}${statusDescriptionMessage}${resetColor}`
 
         const tableRow = {[colorLineName(line.name)]: [statusMessage]}
@@ -109,21 +68,11 @@ const buildStatusTable = (statusData) => {
     return table.toString()
 }
 
-const buildGhettoHTMLVersion = (statusData) => {
-    let list = statusData.map(line => {
-        const statusDescriptionMessage = line.lineStatuses[0].statusSeverityDescription
-        return `<li>${line.name}: ${statusDescriptionMessage}</li>`
-    })
-
-    return `
-    <style>* {font-family: sans-serif;}</style>
-    <h1>${buildHeader('browser')}</h1>
-    <ul>${list.join('')}</ul>
-    <p>NOTE: This is much better if you use "curl tubestat.us" from a terminal</p>`
-}
-
 //ROUTES:
-app.get('/home', (req, res) => res.send('Nothing to see here 👀\n'))
+app.get('/home', (req, res) => {
+    res.render('index', { header: buildHeader('browser') })
+})
+
 app.get('/health', (req, res) => res.send('APP IS WORKING!\n'))
 
 app.get('/', async (req, res) => {
@@ -135,14 +84,13 @@ app.get('/', async (req, res) => {
     console.log('GET TUBE DATA, STATUS: ', tubeDataResponse.status)
 
     const statusTable = buildStatusTable(tubeDataResponse.data)
-    const htmlResponse = buildGhettoHTMLVersion(tubeDataResponse.data)
 
     const userAgentIncludesBrowserTypes = req.headers['user-agent'].includes('Mozilla') || req.headers['user-agent'].includes('Chrome')
 
     const isRequestFromBrowser = typeof req.headers['user-agent'] === 'string' && userAgentIncludesBrowserTypes
 
     if (isRequestFromBrowser) {
-        res.send(htmlResponse)
+        res.render('index', { header: buildHeader('browser'), list: tubeDataResponse.data })
     } else {
         res.send(buildHeader() + statusTable + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
     }
