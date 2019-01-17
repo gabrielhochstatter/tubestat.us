@@ -137,10 +137,14 @@ app.get('/', async (req, res) => {
     const statusTable = buildStatusTable(tubeDataResponse.data)
     const htmlResponse = buildGhettoHTMLVersion(tubeDataResponse.data)
 
-    if (req.headers["user-agent"].includes('curl')) {
-        res.send(buildHeader() + statusTable + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
-    } else {
+    const userAgentIncludesBrowserTypes = req.headers['user-agent'].includes('Mozilla') || req.headers['user-agent'].includes('Chrome')
+
+    const isRequestFromBrowser = typeof req.headers['user-agent'] === 'string' && userAgentIncludesBrowserTypes
+
+    if (isRequestFromBrowser) {
         res.send(htmlResponse)
+    } else {
+        res.send(buildHeader() + statusTable + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
     }
 })
 
