@@ -10,9 +10,15 @@ require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 3000
 
+app.use(express.static('public'))
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
-app.engine('jsx', expressReact.createEngine());
+
+const viewOptions = {
+    babel: {presets: ['@babel/preset-react'], plugins: ['@babel/plugin-proposal-class-properties']}
+}
+app.engine('jsx', expressReact.createEngine(viewOptions));
 
 // API CALL STUFF:
 const getLineStatus = async (lineType) => {
