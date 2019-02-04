@@ -77,7 +77,6 @@ app.get('/health', (req, res) => res.send('APP IS WORKING!\n'))
 
 app.get('/', async (req, res) => {
     
-
     let tubeDataResponse = await getLineStatus('tube,dlr,overground')
     console.log('user agent', req.headers["user-agent"])
     console.log('cache control:', req.headers["cache-control"])
@@ -90,7 +89,8 @@ app.get('/', async (req, res) => {
     const isRequestFromBrowser = typeof req.headers['user-agent'] === 'string' && userAgentIncludesBrowserTypes
 
     if (isRequestFromBrowser) {
-        res.render('index', { header: buildHeader('browser'), list: tubeDataResponse.data })
+        const bigHeader = figlet.textSync('TUBESTAT.US', {font: 'DOS Rebel'})
+        res.render('index', { header: buildHeader('browser'), list: tubeDataResponse.data, bigHeader: bigHeader })
     } else {
         res.send(buildHeader() + statusTable + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
     }
