@@ -22,7 +22,7 @@ const colorLineName = (lineName) => {
       case 'Metropolitan':
           return `#9B0056`
       case 'Northern':
-          return `#000000`
+          return `#808080`
       case 'Piccadilly':
           return `#003688`
       case 'Victoria':
@@ -30,7 +30,17 @@ const colorLineName = (lineName) => {
       case 'Waterloo & City':
           return `#95CDBA`
       default:
-          return `#000000`
+          return `#FFFFFF`
+  }
+}
+
+const colorByStatusSeverity = (statusSeverity) => {
+  if (statusSeverity < 9) {
+    return '#FF0000'
+  } else if (statusSeverity === 9) {
+    return '#FF8C00'
+  } else if (statusSeverity === 10 ) {
+    return '#32CD32'
   }
 }
 
@@ -40,7 +50,7 @@ class HomePage extends React.Component {
     const date = new Date().toDateString()
     return (
       <DefaultLayout>
-        <div>
+        <div style={{ paddingLeft: '20px' }}>
           <p>
             <pre>
               {this.props.bigHeader}
@@ -58,7 +68,7 @@ class HomePage extends React.Component {
                 <p key={line.name}>
                   <span style={{color: colorLineName(line.name)}}>
                     {line.name}
-                  </span>: {statusDescriptionMessage}
+                  </span>: <span style={{color: colorByStatusSeverity(line.lineStatuses[0].statusSeverity)}}>{statusDescriptionMessage}</span>
                 </p>
               )
             })}

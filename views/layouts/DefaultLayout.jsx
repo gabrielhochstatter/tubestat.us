@@ -7,7 +7,7 @@ class DefaultLayout extends React.Component {
         <head>
           <title>tubestat.us</title>
         </head>
-        <body style={{ fontFamily: 'courier', color: 'black', backgroundColor: 'white' }}>
+        <body style={{ fontFamily: 'courier', color: 'white', backgroundColor: 'black' }}>
           {this.props.children}
         </body>
       </html>
