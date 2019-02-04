@@ -99,7 +99,7 @@ app.get('/', async (req, res) => {
         const bigHeader = figlet.textSync('TUBESTAT.US', {font: 'DOS Rebel'})
         res.render('index', { header: buildHeader('browser'), list: tubeDataResponse.data, bigHeader: bigHeader })
     } else {
-        res.send(buildHeader() + statusTable + `\n\x1b[2mCreated by: Gabriel Hochstatter\x1b[0m\n`)
+        res.send(buildHeader() + statusTable + `\n\x1b[2mCreated by: Gabriel Hochstatter - gabrielhochstatter.com\x1b[0m\n`)
     }
 })
 
