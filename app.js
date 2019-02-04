@@ -12,6 +12,13 @@ const port = process.env.PORT || 3000
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
+const viewOptions = {
+    babel: {
+        plugins: [
+            '@babel/plugin-proposal-class-properties'
+        ]
+    }
+}
 app.engine('jsx', expressReact.createEngine());
 
 // API CALL STUFF:
