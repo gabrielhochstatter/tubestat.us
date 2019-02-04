@@ -38,7 +38,7 @@ const colorByStatusSeverity = (statusSeverity) => {
   if (statusSeverity < 9) {
     return '#FF0000'
   } else if (statusSeverity === 9) {
-    return '#FF8C00'
+    return '#FFFF00'
   } else if (statusSeverity === 10 ) {
     return '#32CD32'
   }
@@ -61,18 +61,42 @@ class HomePage extends React.Component {
               Line status @ {time} on {date}
             </strong>
           </p>
-          <div>
+          <table style={{
+            borderCollapse: 'collapse',
+            border: '1px solid white',
+            textAlign: 'left'
+          }}>
+            <tr style={{ border: '1px solid white' }}>
+              <th style={{ border: '1px solid white', padding: '10px' }}>Line</th>
+              <th style={{ border: '1px solid white', padding: '10px' }}>Status</th>
+            </tr>
             {this.props.list.map(line => {
               const statusDescriptionMessage = line.lineStatuses[0].statusSeverityDescription
               return (
-                <p key={line.name}>
-                  <span style={{color: colorLineName(line.name)}}>
+                <tr key={line.name}>
+                  <td style={{
+                    color: colorLineName(line.name),
+                    border: '1px solid white',
+                    padding: '10px'
+                  }}>
                     {line.name}
-                  </span>: <span style={{color: colorByStatusSeverity(line.lineStatuses[0].statusSeverity)}}>{statusDescriptionMessage}</span>
-                </p>
+                  </td>
+                  <td style={{
+                    color: colorByStatusSeverity(line.lineStatuses[0].statusSeverity),
+                    border: '1px solid white',
+                    padding: '10px'
+                  }}>
+                    {statusDescriptionMessage}
+                  </td>
+                </tr>
               )
             })}
-          </div>
+          </table>
+          <p>
+            <a href='https://github.com/gabrielhochstatter/tubestat.us' style={{color: '#555555'}}>GitHub</a>
+            <span>{' '}</span>
+            <a href='http://gabrielhochstatter.com' style={{color: '#555555'}}>GabrielHochstatter.com</a>
+          </p>
         </div>
       </DefaultLayout>
     );
